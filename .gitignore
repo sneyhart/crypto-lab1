@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+git-reg.jar
+temp/
+testin
+testkey
+testout
