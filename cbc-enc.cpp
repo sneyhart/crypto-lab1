@@ -54,8 +54,12 @@ int main(int argc, char ** argv)
 	}
 	if(fread(&key,1,16,kf) != 16)
 		fprintf(stderr,"Not enought bytes read for the key.\n");
+	if(v != -1 && iv !=NULL){
+		if(fread(&prev,1,16,iv) != 16)
+			fprintf(stderr,"Not enought bytes read for the key.\n");
+	}		
 	printf("%s\n",prev);
-	fprintf(output, "%s",prev);
+	fwrite(prev,1,16,output);
 	tmp = fread(&buf,1,16,input); 
 	while(tmp == 16){
 		xor_128(buf,prev);
@@ -63,17 +67,17 @@ int main(int argc, char ** argv)
 		cpy_128(prev,buf2);
 		buf2[16] = '\0';
 		printf("%s\n",buf2);
-		fprintf(output, "%s",buf2);
+		fwrite(buf2,1,16,output);
 		tmp = fread(&buf,1,16,input); 
 	}
 	for(i = tmp; i < 16; i++){
-		buf[i] = (u_char) 16 - tmp;
+		buf[i] = (u_char) (16 - tmp);
 	}
 	xor_128(buf,prev);
 	encode_128(key, buf, buf2);
 	buf2[16] = '\0';
 	printf("%s\n",buf2);
-	fprintf(output, "%s",buf2);
+	fwrite(buf2,1,16,output);
 	
 	fclose(kf);
 	fclose(input);
