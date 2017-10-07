@@ -43,6 +43,7 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 	
+	//decryption
 	u_char key[16];
 	u_char prev[16];
 	u_char buf[17];
@@ -57,26 +58,27 @@ int main(int argc, char ** argv)
 		xor_128(buf2,prev);
 		cpy_128(prev,buf);
 		buf2[16] = '\0';
-		if(buf2[15] > (u_char)0 && buf2[15] <= 16){
+		if(buf2[15] > (u_char)0 && buf2[15] <= (u_char)16){
 			for(i = 0; i < (int)buf2[15]; i++){
 				if (buf2[15-i] != buf2[15]){
 					pad = 0;
 				}
 			}
-			if(pad){
+			if(pad == 1){
 				pad = (int)buf2[15];
-				fwrite(buf2,1,16-pad,stdout);
+				//fwrite(buf2,1,16-pad,stdout);
 				fwrite(buf2,1,16-pad,output);
 				break;
 			}
 		}
 		//printf("%s",buf2);
-		fwrite(buf2,1,16,stdout);
+		//fwrite(buf2,1,16,stdout);
 		fwrite(buf2,1,16,output);
 		//fprintf(output, "%s",buf2);
 		tmp = fread(&buf,1,16,input); 
 	}
 
+	printf("File written.\n");
 	fclose(kf);
 	fclose(input);
 	fclose(output);

@@ -43,6 +43,7 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 	
+	//encryption
 	time_t t;
 	srand((unsigned) time(&t));
 	u_char key[16];
@@ -58,7 +59,7 @@ int main(int argc, char ** argv)
 		if(fread(&prev,1,16,iv) != 16)
 			fprintf(stderr,"Not enought bytes read for the key.\n");
 	}		
-	printf("%s\n",prev);
+	//printf("%s\n",prev);
 	fwrite(prev,1,16,output);
 	tmp = fread(&buf,1,16,input); 
 	while(tmp == 16){
@@ -66,7 +67,7 @@ int main(int argc, char ** argv)
 		encode_128(key, buf, buf2);
 		cpy_128(prev,buf2);
 		buf2[16] = '\0';
-		printf("%s\n",buf2);
+		//printf("%s\n",buf2);
 		fwrite(buf2,1,16,output);
 		tmp = fread(&buf,1,16,input); 
 	}
@@ -76,9 +77,10 @@ int main(int argc, char ** argv)
 	xor_128(buf,prev);
 	encode_128(key, buf, buf2);
 	buf2[16] = '\0';
-	printf("%s\n",buf2);
+	//printf("%s\n",buf2);
 	fwrite(buf2,1,16,output);
 	
+	printf("File written.\n");
 	fclose(kf);
 	fclose(input);
 	fclose(output);
