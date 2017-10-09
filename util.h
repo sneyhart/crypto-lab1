@@ -1,4 +1,4 @@
-#include <string>
+#include <string.h>
 #include <iostream>
 #include <openssl/evp.h>
 #include <openssl/err.h>
