@@ -35,3 +35,7 @@ temp/
 testin
 testkey
 testout
+cbc-enc
+cbc-dec
+ctr-enc
+ctr-dec
