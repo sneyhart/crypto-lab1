@@ -1,7 +1,16 @@
 #include "util.h"
 #include <cstdio>
 #include <cstdlib>
-#include <pthread.h>
+
+void *encrypt(u_char *data, u_char *iv, int start, int end, int *tnum)
+{
+	int *i;
+
+	i=(int*) tnum;
+	printf("Thread %d\n", *i);
+	return NULL;
+}
+
 int main(int argc, char ** argv)
 {
 	SSL_load_error_strings();
@@ -43,6 +52,25 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 	
+	//get file size
+	int filesize;
+	fseek(input, 0, SEEK_END);
+	filesize = ftell(input);
+	rewind(input);
+
+	printf("filesize = %d\n", filesize);
+	
+	//malloc and read file into buffer.
+	u_char *fbuffer, *obuffer;
+	fbuffer = (u_char*)malloc(sizeof(u_char) * (filesize));
+	obuffer = (u_char*)malloc(sizeof(u_char) * (filesize+16));
+	if(fbuffer == NULL)
+		printf("memory error\n");
+	fread(fbuffer, 1, filesize, input);
+	printf("FILE:\n%s\n",fbuffer);
+
+	rewind(input);
+
 	//encryption
 	time_t t;
 	srand((unsigned) time(&t));
@@ -50,9 +78,13 @@ int main(int argc, char ** argv)
 	u_char prev[16];
 	u_char buf[17];
 	u_char buf2[17];
+	
+
+
 	for(i = 0; i < 16; i++){
 		prev[i] = (u_char) rand();
 	}
+	
 	if(fread(&key,1,16,kf) != 16)
 		fprintf(stderr,"Not enought bytes read for the key.\n");
 	if(v != -1 && iv !=NULL){
@@ -61,12 +93,11 @@ int main(int argc, char ** argv)
 	}		
 	//printf("%s\n",prev);
 	fwrite(prev,1,16,output);
+	
+	for(i=0; i<4; i
+
+
 	tmp = fread(&buf,1,16,input); 
-	fseek(input,0L,SEEK_END);
-	int size = ftell(input);
-	rewind(input);
-	u_char *file = (u_char*)malloc(size);
-	fread(file, 1, size, input);
 	unsigned int *convert;
 	convert = (unsigned int*)&prev[12];	
 	while(tmp == 16){
@@ -85,10 +116,14 @@ int main(int argc, char ** argv)
 	encode_128(key, buf, buf2);
 	buf2[16] = '\0';
 	//printf("%s\n",buf2);
-	fwrite(buf2,1,16,output);
 	
+	fwrite(buf2,1,16,output);
+
+
+
+
+
 	printf("File written.\n");
-	free(file);
 	fclose(kf);
 	fclose(input);
 	fclose(output);
