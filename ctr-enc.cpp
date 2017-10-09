@@ -1,7 +1,7 @@
 #include "util.h"
 #include <cstdio>
 #include <cstdlib>
-
+#include <pthread.h>
 int main(int argc, char ** argv)
 {
 	SSL_load_error_strings();
@@ -62,6 +62,11 @@ int main(int argc, char ** argv)
 	//printf("%s\n",prev);
 	fwrite(prev,1,16,output);
 	tmp = fread(&buf,1,16,input); 
+	fseek(input,0L,SEEK_END);
+	int size = ftell(input);
+	rewind(input);
+	u_char *file = (u_char*)malloc(size);
+	fread(file, 1, size, input);
 	unsigned int *convert;
 	convert = (unsigned int*)&prev[12];	
 	while(tmp == 16){
@@ -83,6 +88,7 @@ int main(int argc, char ** argv)
 	fwrite(buf2,1,16,output);
 	
 	printf("File written.\n");
+	free(file);
 	fclose(kf);
 	fclose(input);
 	fclose(output);

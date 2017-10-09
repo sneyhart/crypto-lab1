@@ -1,6 +1,7 @@
 #include "util.h"
 #include <cstdio>
 #include <cstdlib>
+#include <pthread.h>
 
 int main(int argc, char ** argv)
 {
@@ -51,6 +52,11 @@ int main(int argc, char ** argv)
 	if(fread(&key,1,16,kf) != 16)
 		fprintf(stderr,"Not enought bytes read for the key.\n");
 	fread(&prev, 1, 16, input);
+	fseek(input,0L,SEEK_END);
+	int size = ftell(input);
+	rewind(input);
+	u_char *file = (u_char*)malloc(size);
+	fread(file, 1, size, input);
 	tmp = fread(&buf,1,16,input); 
 	int pad = 1;
 	unsigned int *convert;
@@ -81,6 +87,7 @@ int main(int argc, char ** argv)
 	}
 
 	printf("File written.\n");
+	free(file);
 	fclose(kf);
 	fclose(input);
 	fclose(output);
